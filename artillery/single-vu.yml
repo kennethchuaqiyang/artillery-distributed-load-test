@@ -1,20 +1,9 @@
 config:
-  # target: "http://localhost:3000"
   target: "http://45.77.42.229:3000"
   phases:
-    - duration: 20
-      arrivalRate: 2
-      name: "Warm up"
-    - duration: 60
-      arrivalRate: 5
-      rampTo: 100
-      name: "Gradual ramp"
-    - duration: 60
-      arrivalRate: 100
-      rampTo: 300
-      name: "Find the ceiling"
-  # Increase arrivalRate/rampTo above until you see p95/p99 latency
-  # climb or errors appear - that's your "found the breaking point" story.
+    - duration: 1
+      arrivalCount: 1
+      name: "Single VU baseline"
 
 scenarios:
   - name: "List users (uncached)"
