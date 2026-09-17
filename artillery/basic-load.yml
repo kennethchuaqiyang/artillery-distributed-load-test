@@ -1,0 +1,37 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 20
+      arrivalRate: 2
+      name: "Warm up"
+    - duration: 30
+      arrivalRate: 5
+      rampTo: 250
+      name: "Ramp up load"
+    - duration: 20
+      arrivalRate: 675
+      name: "Sustained peak"
+  # Increase arrivalRate/rampTo above until you see p95/p99 latency
+  # climb or errors appear - that's your "found the breaking point" story.
+
+scenarios:
+  - name: "List users (uncached)"
+    weight: 40
+    flow:
+      - get:
+          url: "/users"
+
+  - name: "Get single user (cached after first hit)"
+    weight: 40
+    flow:
+      - get:
+          url: "/users/{{ $randomNumber(1, 30) }}"
+
+  - name: "Create order"
+    weight: 20
+    flow:
+      - post:
+          url: "/orders"
+          json:
+            userId: "{{ $randomNumber(1, 30) }}"
+            total: "{{ $randomNumber(10, 1000) }}"

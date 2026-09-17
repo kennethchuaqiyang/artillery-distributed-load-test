@@ -1,0 +1,22 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      rampTo: 20
+      name: "Ramp up auth flow load"
+
+scenarios:
+  - name: "Login then access authenticated profile"
+    flow:
+      - post:
+          url: "/login"
+          json:
+            userId: "{{ $randomNumber(1, 30) }}"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      - get:
+          url: "/profile"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
